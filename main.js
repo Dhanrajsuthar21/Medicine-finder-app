@@ -374,17 +374,17 @@ const medicineData = {
 
 
 
+let greet = document.getElementById('greet')
+
 function filterFunction(event) {
   let userInput = event.target.value.toLowerCase();
   let [mainMed, altMed, showMain] = filterMed(userInput, medicineData);
-  
   
   function filterMed(userInput, object) {
     let main = {};
     let alt = {};
     let showMain = {};
-    
-    
+    // Find main medicine 
     for (let key in object) {
       if (key.toLowerCase().includes(userInput)) {
         main[key] = object[key];
@@ -398,6 +398,7 @@ function filterFunction(event) {
       }
     }
     
+    //Alternative medicine 
     
     for (let key in object) {
       if (object[key].Alternative) {
@@ -411,72 +412,141 @@ function filterFunction(event) {
     }
     
     return [Object.values(main), Object.values(alt), Object.values(showMain)];
+    
   }
-  showFilter(mainMed, altMed, showMain, );
+  showFilter(mainMed, altMed, showMain);
+  
+  
 }
 
-function showFilter(mainMed, altMed, showMain, ) {
+function showFilter(mainMed, altMed, showMain) {
   let data = document.getElementById('filter');
+  let resultHTML = "";
   
   function ram(list, type) {
     
-    
     let r = `<p class="tag">${type}</p>`;
-    
+    // Card data
     for (let items of list) {
-      r += `<button onclick="window.open('${items.link}', '_blank')" class="card">
-    <div id="img">
-        <img src="${items.image}" alt="${items.name} image"/>
-    </div>
-    <div class="text">
-        <h1><span> Name: </span> ${items.name}</h1>
-        ${items.manufacturer ? `<p><span> Manufacturer:</span> ${items.manufacturer}</p>` : ""}
-        <p><span> Price: </span>${items.price}</p>
-    </div>
+      r += `<button onclick="window.open('${items.link}', '_blank')" class="card">  
+<div id="img">  
+    <img src="${items.image}" alt="${items.name} image"/>  
+</div>  
+<div class="text">  
+    <h1><span> Name: </span> ${items.name}</h1>  
+    ${items.manufacturer ? `<p><span> Manufacturer:</span> ${items.manufacturer}</p>` : ""}  
+    <p><span> Price: </span>${items.price}</p>  
+</div>  
 
 
-                      
-                      
-                    </div>
-                </button>
-            `;
+                    
+                    
+                </div>  
+            </button>  
+        `;
     }
-    return r;''
+    return r;
+    
   }
   
-  let resultHTML = "";
-  
+  //  CASE 1 → main मिला
   if (mainMed.length > 0) {
-    resultHTML += ram(mainMed, "Original");
-    resultHTML += ram(altMed, "Alternative");
+    
+    // Pehle sirf main show karo  
+    resultHTML = ram(mainMed, "Original");
+    // Alt ko  hidden  krna
+    resultHTML +=
+      `<div id="altMedBox" style="display:none;">   
+ ${ ram(altMed, "Alternative")}   
+  </div>`;
+    
+    
+    
   }
-  
+  //  CASE 2 → sirf alternative मिला
   else if (altMed.length > 0) {
-    resultHTML += ram(altMed, "Alternative");
-    resultHTML += ram(showMain, "Original");
+   resultHTML =
+      ram(altMed, "Alternative") +
+      ram(showMain, "Original");
   }
   
+  //  Not found
   else {
-    resultHTML = `<p class="not-found">Data Not Found</p>
-                      <button type="reset"
-      onclick="resetSearch()">Try again</button>`;
+   resultHTML =
+      "<p class='not-found'>Data Not Found</p>" +
+      "<button onclick='resetSearch()'>Try again</button>";
+    document.getElementById("ramaaa").style.display = "none";
   }
   
-  data.innerHTML = resultHTML;
   
-  
+  if (document.getElementById("search").value === "") {
+    resultHTML = ""
+  }
+  data.innerHTML=resultHTML;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", function() {
+  let btn = document.getElementById("ramaaa");
+  if (btn) {
+    btn.onclick = function() {
+      let x = document.getElementById("altMedBox");
+      if (x) {
+        x.style.display = "block";
+      }
+    }
+    
+  }
+});
 
 function resetSearch(event) {
   document.getElementById('search').value = "";
   document.getElementById('filter').innerHTML = "";
+  document.getElementById("aaa").value = "";
 }
 
 function saveName() {
-    let userName = document.getElementById("input").value;
-    localStorage.setItem("userName", userName);
+  let userName = document.getElementById("input").value;
+  localStorage.setItem("userName", userName);
 }
 if (document.getElementById("user")) {
-    let savedName = localStorage.getItem("userName") || "Guest";
-    document.getElementById("user").innerHTML = savedName;
+  let savedName = localStorage.getItem("userName") || "Guest";
+  document.getElementById("user").innerHTML = savedName;
 }
+
+function updateGreeting() {
+  
+  let hour = new Date().getHours();
+  let greeting = "";
+  if (hour >= 5 && hour < 12) {
+    greeting = "Good morning 🌞 "
+  } else if (hour >= 12 && hour < 17
+    
+  ) {
+    greeting = "Good after noon"
+  }
+  
+  else if (hour >= 17 && hour < 21) {
+    greeting = " Good evening ✨ "
+  }
+  
+  else {
+    greeting = "Good night 😴 "
+  }
+  if (greet) {
+    greet.innerHTML = greeting;
+  }
+  
+}
+
+updateGreeting();
