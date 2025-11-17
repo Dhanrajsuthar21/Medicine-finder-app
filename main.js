@@ -460,7 +460,7 @@ function showFilter(mainMed, altMed, showMain) {
  ${ ram(altMed, "Alternative")}   
   </div>`;
     
-    
+    document.getElementById("ramaaa").style.display = "block";
     
   }
   //  CASE 2 → sirf alternative मिला
