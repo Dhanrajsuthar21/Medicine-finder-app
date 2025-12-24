@@ -374,21 +374,22 @@ const medicineData = {
 
 
 
-let greet = document.getElementById('greet')
+
+let greet = document.getElementById('greet');
 
 function filterFunction(event) {
   let userInput = event.target.value.toLowerCase();
   let [mainMed, altMed, showMain] = filterMed(userInput, medicineData);
+  //ram 
   
   function filterMed(userInput, object) {
     let main = {};
     let alt = {};
     let showMain = {};
-    // Find main medicine 
+    // Find main medicine
     for (let key in object) {
       if (key.toLowerCase().includes(userInput)) {
         main[key] = object[key];
-        
         
         if (object[key].Alternative) {
           for (let altKey in object[key].Alternative) {
@@ -398,7 +399,7 @@ function filterFunction(event) {
       }
     }
     
-    //Alternative medicine 
+    //Alternative medicine   
     
     for (let key in object) {
       if (object[key].Alternative) {
@@ -416,96 +417,90 @@ function filterFunction(event) {
   }
   showFilter(mainMed, altMed, showMain);
   
-  
 }
+
+
+
 
 function showFilter(mainMed, altMed, showMain) {
   let data = document.getElementById('filter');
+  
+  
   let resultHTML = "";
   
   function ram(list, type) {
     
     let r = `<p class="tag">${type}</p>`;
-    // Card data
     for (let items of list) {
-      r += `<button onclick="window.open('${items.link}', '_blank')" class="card">  
-<div id="img">  
-    <img src="${items.image}" alt="${items.name} image"/>  
-</div>  
-<div class="text">  
-    <h1><span> Name: </span> ${items.name}</h1>  
-    ${items.manufacturer ? `<p><span> Manufacturer:</span> ${items.manufacturer}</p>` : ""}  
-    <p><span> Price: </span>${items.price}</p>  
-</div>  
-
-
-                    
-                    
-                </div>  
-            </button>  
-        `;
+      r += `
+        <button onclick="window.open('${items.link}', '_blank')" class="card">
+          <div id="img">
+            <img src="${items.image}" alt="${items.name} image"/>
+          </div>
+          <div class="text">
+            <h1><span>Name:</span> ${items.name}</h1>
+            ${items.manufacturer ? `<p><span>Manufacturer:</span> ${items.manufacturer}</p>` : ""}
+            <p><span>Price:</span> ${items.price}</p>
+          </div>
+        </button>
+      `;
     }
     return r;
-    
   }
   
-  //  CASE 1 → main मिला
   if (mainMed.length > 0) {
-    
-    // Pehle sirf main show karo  
+    setButton(altMed.length > 0)
+    // Original hamesha dikhao
     resultHTML = ram(mainMed, "Original");
-    // Alt ko  hidden  krna
-    resultHTML +=
-      `<div id="altMedBox" style="display:none;">   
- ${ ram(altMed, "Alternative")}   
-  </div>`;
     
-    document.getElementById("ramaaa").style.display = "block";
-    
-  }
-  //  CASE 2 → sirf alternative मिला
-  else if (altMed.length > 0) {
-   resultHTML =
-      ram(altMed, "Alternative") +
-      ram(showMain, "Original");
-  }
-  
-  //  Not found
-  else {
-   resultHTML =
+    // Alt ka HTML yahi banao, par hidden rakho
+    resultHTML += `
+      <div id="altMedBox" style="display:none;">
+        ${ram(altMed, "Alternative")}
+      </div>
+    `;
+
+  } else if (altMed.length > 0) {
+    // Jab user 'Alternative' type kare
+    resultHTML = ram(altMed, "Alternative") + ram(showMain, "Original");
+   setButton(true)
+  } else {
+    resultHTML =
       "<p class='not-found'>Data Not Found</p>" +
       "<button onclick='resetSearch()'>Try again</button>";
-    document.getElementById("ramaaa").style.display = "none";
+  
+    setButton(false)
   }
   
+  const searchInput = document.getElementById("search");
+  if (searchInput && searchInput.value === "") {
+    resultHTML = "";
+    
+  } 
   
-  if (document.getElementById("search").value === "") {
-    resultHTML = ""
-  }
-  data.innerHTML=resultHTML;
+  
+  data.innerHTML = resultHTML;
+  
 }
-
-
-
-
-
-
-
-
-
-
-
-
+function setButton(visible) {
+  const btn = document.getElementById("ramaaa");
+  if (btn) {
+    btn.style.display = visible ? "block" : "none";
+  }
+}
+  
 document.addEventListener("DOMContentLoaded", function() {
   let btn = document.getElementById("ramaaa");
+  
+  
   if (btn) {
     btn.onclick = function() {
       let x = document.getElementById("altMedBox");
-      if (x) {
-        x.style.display = "block";
-      }
-    }
-    
+      if (!x) return;
+      x.style.display = (x.style.display === "none" || x.style.display === "") ?
+        "block" :
+        "none";
+    };
   }
 });
 
@@ -513,6 +508,7 @@ function resetSearch(event) {
   document.getElementById('search').value = "";
   document.getElementById('filter').innerHTML = "";
   document.getElementById("aaa").value = "";
+  
 }
 
 function saveName() {
@@ -537,7 +533,7 @@ function updateGreeting() {
   }
   
   else if (hour >= 17 && hour < 21) {
-    greeting = " Good evening ✨ "
+    greeting = " Good evening  "
   }
   
   else {
